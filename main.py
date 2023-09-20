@@ -1,8 +1,8 @@
 from flask import Flask, render_template
 import requests
 
-
-posts = requests.get("https://api.npoint.io/eb6cd8a5d783f501ee7d").json()
+BLOG_API_URL = "https://api.npoint.io/eb6cd8a5d783f501ee7d"
+posts = requests.get(BLOG_API_URL).json()
 
 app = Flask(__name__)
 
@@ -17,6 +17,14 @@ def about():
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
+
+@app.route("/post/<int:index>")
+def show_post(index):
+    requested_post = None
+    for blog_post in posts:
+        if blog_post["id"] == index:
+            requested_post = blog_post
+    return render_template("post.html", post=requested_post)
 
 
 if __name__ == "__main__":
